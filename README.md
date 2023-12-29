@@ -1,2 +1,2 @@
 # buzhengya.github.io
-personal blog
+buzheng's blog
