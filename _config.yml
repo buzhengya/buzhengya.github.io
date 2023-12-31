@@ -105,5 +105,5 @@ theme: landscape
 deploy:
   type: git
   repo: git@github.com:buzhengya/buzhengya.github.io.git
-  branch: main
+  branch: master
   message: 
