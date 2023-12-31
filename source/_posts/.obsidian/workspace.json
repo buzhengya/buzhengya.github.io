@@ -1,0 +1,166 @@
+{
+  "main": {
+    "id": "284486c2bc81fefd",
+    "type": "split",
+    "children": [
+      {
+        "id": "97717145878d9f59",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f435019dd4adf1e7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "hello-world.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "2738886df2423d96",
+    "type": "split",
+    "children": [
+      {
+        "id": "6a3c6278688119ed",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f74ab1d9379adc99",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "3f95e96cfe197094",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "6c3752a8c55f4cb1",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "ed80ada7b1654746",
+    "type": "split",
+    "children": [
+      {
+        "id": "a5c4f6931979fafc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6e87308a52cd5ca5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "hello-world.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "43faee90762993ef",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "hello-world.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "2211aa54851740ac",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "5b25a8fe5cd27acd",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "hello-world.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "f435019dd4adf1e7",
+  "lastOpenFiles": [
+    "2023-年终总结.md",
+    "2023-年终总结/测试.png",
+    "hello-world.md",
+    "2023-年终总结/测试复制粘贴.png",
+    "2023-年终总结/BR.png",
+    "2023-年终总结",
+    "test.md",
+    "test-png.md",
+    "2023_summary.md",
+    "test/BR.png",
+    "test-image.md",
+    "test",
+    "test-image",
+    "2023-summary.md"
+  ]
+}
