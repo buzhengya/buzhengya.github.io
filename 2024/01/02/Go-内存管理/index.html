@@ -20,28 +20,34 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="buzhengya&#39;s blob">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="结构体 &amp; 关系graph TD;     A--&gt;B;     A--&gt;C;     B--&gt;D;     C--&gt;D;    graph TB  mheap(global mheap) --&gt; arenas  mheap(global mheap) --&gt; allspans  mheap(global mheap) --&gt; central  arenas --&gt; |按134个obj_s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go 内存管理">
+<meta property="og:url" content="http://example.com/2024/01/02/Go-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
 <meta property="og:site_name" content="buzhengya&#39;s blob">
+<meta property="og:description" content="结构体 &amp; 关系graph TD;     A--&gt;B;     A--&gt;C;     B--&gt;D;     C--&gt;D;    graph TB  mheap(global mheap) --&gt; arenas  mheap(global mheap) --&gt; allspans  mheap(global mheap) --&gt; central  arenas --&gt; |按134个obj_s">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-01-02T12:40:45.000Z">
+<meta property="article:modified_time" content="2024-01-03T13:20:20.708Z">
 <meta property="article:author" content="buzhengya">
+<meta property="article:tag" content="Go">
+<meta property="article:tag" content="内存管理">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2024/01/02/Go-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>buzhengya's blob</title>
+  <title>Go 内存管理 | buzhengya's blob</title>
   
 
 
@@ -139,9 +145,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -157,10 +164,9 @@
       <meta itemprop="name" content="buzhengya's blob">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/01/02/Go-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">Go 内存管理</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          Go 内存管理
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -190,7 +196,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="结构体-关系"><a href="#结构体-关系" class="headerlink" title="结构体 &amp; 关系"></a>结构体 &amp; 关系</h3><pre class="mermaid">graph TD;
+        <h3 id="结构体-关系"><a href="#结构体-关系" class="headerlink" title="结构体 &amp; 关系"></a>结构体 &amp; 关系</h3><pre class="mermaid">graph TD;
     A-->B;
     A-->C;
     B-->D;
@@ -242,204 +248,34 @@ mcache --> |按134个obj_size分类| mspan</pre>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// spanSet 是 *mspan数组</span></span><br><span class="line"><span class="keyword">type</span> mcentral <span class="keyword">struct</span> &#123;</span><br><span class="line">	partial [<span class="number">2</span>]spanSet <span class="comment">// list of spans with a free object  </span></span><br><span class="line">	full    [<span class="number">2</span>]spanSet <span class="comment">// list of spans with no free objects</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </details>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/Go/" rel="tag"># Go</a>
+              <a href="/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="tag"># 内存管理</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/29/2023-%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="buzhengya">
-      <meta itemprop="description" content="">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="buzhengya's blob">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/12/29/2023-%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">2023 年终总结</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-12-29 19:20:01" itemprop="dateCreated datePublished" datetime="2023-12-29T19:20:01+08:00">2023-12-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-31 20:33:14" itemprop="dateModified" datetime="2023-12-31T20:33:14+08:00">2023-12-31</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="工作"><a href="#工作" class="headerlink" title="工作"></a>工作</h2><p>今年工作分为两个阶段：埋头做事和抬头思考。<br>第一阶段：前九个月埋头做安排的需求。包括一些之前没有做过且比较有趣的需求。<br>第二阶段：后三个月准备晋升答辩和面试。在这个过程中对自己做的事情进行思考：为什么要做？为什么这么做？难点是什么？</p>
-<p>对自己而言有趣且兼具探索性的事情包括：</p>
-<ol>
-<li>DAL(data access layer) SDK单测的建设并做大咖说分享。</li>
-<li>定时调度服务的负载均衡器，尤其是基于预分配方式的负载均衡。</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/alibaba/canal">canal</a>的rebalance和TSDB机制。</li>
-<li>业务API Gateway Proxy的重构。</li>
-</ol>
-<p>这些事情少吗？其实并不少，但我内心还是不满意，因为这些事情都没有充分落地且缺少自己的思考。</p>
-<ol>
-<li>DAL SDK单测的建设。其价值应该体现在后续的迭代仍会做充分的单测并且通过单测发现开发中的问题，但因为自己后续没持续维护该SDK，所以后续的单测不了了之。</li>
-<li>定时调度服务的负载均衡。1、预分配调度方案的问题：没有解决任务资源预测公式参数的自动迭代。2、线上的任务数&#x2F;节点过少，所以负载均衡后的效果不明显。</li>
-<li>canal的rebalance和TSDB机制。rebalance机制效果不错，但是需要手动触发而不是自动rebalance。TSDB机制在设计上存在扩展性的缺陷且只是已有机制的拓展实现。</li>
-<li>业务API Gateway Proxy的重构：项目立项之初是为了填工时，没有考虑落地的流量迁移，而且我应该也等不到线上流量迁移完成了。</li>
-</ol>
-<p>准备晋升答辩PPT和面试的一些思考：</p>
-<ol>
-<li>对自己做的事情进行梳理时，发现需求来源于：1. 业务需求。2. leader提的技术需求。我从来没有思考过为什么要做这些事情，但原本这些技术需求应该是我主动提而不是leader来提的。</li>
-<li>在确定方案时，没有仔细去做方案对比，和公司已有组件的对比，和业界的对比，以及整个项目的难点是什么。</li>
-<li>对落地的要求停留在leader的要求，没有长远的思考和持续的跟进。</li>
-<li>对做的事情的文档整合：技术方案和落地结果的保存，如果想要晋升答辩和年度总结，这些数据和文档都应该及时保存，到答辩和汇报时才能游刃有余。</li>
-</ol>
-<p>总结：做的事情并不少，但缺少自己的思考以及做的过程中的文档的保存。</p>
-<h2 id="技术"><a href="#技术" class="headerlink" title="技术"></a>技术</h2><p>今年缺少工作之外的技术学习，仅对工作相关的事情做了简单的拓展，比如单测的了解，dolphinschedule的了解。</p>
-<h2 id="阅读"><a href="#阅读" class="headerlink" title="阅读"></a>阅读</h2><p>阅读分为线上和线下。<br>线上（微信读书）：文学、易读的心理学、哲学、社会学类书籍。累计阅读161个小时<br>线下（纸质书籍）：心理学，入门的哲学书籍。</p>
-<p>成就：把大部分想看的心理学书籍都看完了。其中包含了《心理学导论》和《认知心理学》这样的大部头。</p>
-<p>对自己的影响和改变：</p>
-<ol>
-<li>睡眠。过去睡眠浅，中途醒后很难再次入睡，现在入睡快且困了随时都能眯一会恢复精力。</li>
-<li>情绪控制。很久没有感受到强烈的负面情绪了（甚至强烈的积极情绪也少了），leader对自己的评价少了沟通时要控制好自己的情绪，面试时也会得到面试官善于沟通的积极评价。</li>
-<li>自我的觉察。能很容易的感受到当前的情绪并分析出原因。</li>
-</ol>
-<p>总结：进步非常明显，我本无意通过阅读得到功利性的回报，但积累到了以后自然而然的就更加有智慧了。</p>
-<h2 id="运动"><a href="#运动" class="headerlink" title="运动"></a>运动</h2><p>分两个阶段：</p>
-<ol>
-<li>4月及以前：跑步。</li>
-<li>4月以后：有氧主要靠骑车，偶尔游泳 &amp; 跑步，然后增加了日常力量锻炼。</li>
-</ol>
-<p>因为跑步，膝盖在意料之内的受伤了，短暂的迷茫后，调整心态把力量锻炼作为日常的训练，有氧靠骑车上下班，偶尔游泳 + 跑步。</p>
-<p>总结：对跑步的执念并不深，被迫放弃后很快找到了更健康的锻炼方式。</p>
-<h2 id="情感"><a href="#情感" class="headerlink" title="情感"></a>情感</h2><p>今年应该算是经历了两段情感。<br>第一段：从开始渴望被异性拯救到不得不分手，然后意识到自己应该学会独立，发展出独立的思想和人格。<br>第二段：想要学会如何爱一个人，去了解她的喜好，了解一切关于她的信息以及时刻想她所想，最后还是没有结果。但这段情感的结束也终于让我培养出了独立的思想和人格，而且也更擅长揣摩人心了。</p>
-<p>总结：现在的我感受到了自身的完整，也越来越接纳 &amp; 享受孤独。</p>
-<h1 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h1><ol>
-<li>工作的三个重点是：思考、落地、文档。</li>
-<li>技术学习：结合工作内容广泛的了解和阅读。希望明年能通读完以下开源库的官方文档和一些相关的代码：MySQL、Redis、Kafka、Go。</li>
-<li>阅读：通读完从培根、笛卡尔到康德的主要哲学著作，中间穿插一些心理学和社会学著作。</li>
-<li>运动：早起进行20min左右的力量锻炼，上下班骑行，周末或其它时候偶尔跑步&amp;游泳。</li>
-<li>情感：暂时不想开始新的亲密关系，当想要再次尝试的时候，希望自己不要害怕，大胆尝试，不追求结果，享受过程。</li>
-</ol>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/12/29/2023-%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" rel="prev" title="2023 年终总结">
+      <i class="fa fa-chevron-left"></i> 2023 年终总结
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/29/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="buzhengya">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="buzhengya's blob">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/12/29/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-12-29 19:19:27" itemprop="dateCreated datePublished" datetime="2023-12-29T19:19:27+08:00">2023-12-29</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
@@ -492,6 +328,7 @@ mcache --> |按134个obj_size分类| mspan</pre>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93-%E5%85%B3%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">结构体 &amp; 关系</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
