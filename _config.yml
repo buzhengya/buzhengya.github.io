@@ -98,7 +98,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
@@ -107,3 +107,11 @@ deploy:
   repo: git@github.com:buzhengya/buzhengya.github.io.git
   branch: master
   message: 
+
+mermaid:
+  enable: true
+  on: true
+  # Available themes: default | dark | forest | neutral
+  theme:
+    light: default
+    dark: dark

@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "97717145878d9f59",
+        "id": "5e7a0ba7789ae56a",
         "type": "tabs",
         "children": [
           {
-            "id": "f435019dd4adf1e7",
+            "id": "7902462c99185887",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "hello-world.md",
+                "file": "Go-内存管理.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "hello-world.md",
+                "file": "Go-内存管理.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "hello-world.md",
+                "file": "Go-内存管理.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "hello-world.md"
+                "file": "Go-内存管理.md"
               }
             }
           }
@@ -146,11 +146,13 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "f435019dd4adf1e7",
+  "active": "7902462c99185887",
   "lastOpenFiles": [
+    "hello-world.md",
+    "Go-内存管理.md",
+    "Go-内存管理",
     "2023-年终总结.md",
     "2023-年终总结/测试.png",
-    "hello-world.md",
     "2023-年终总结/测试复制粘贴.png",
     "2023-年终总结/BR.png",
     "2023-年终总结",
