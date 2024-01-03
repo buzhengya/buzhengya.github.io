@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="结构体 &amp; 关系graph TD;     A--&gt;B;     A--&gt;C;     B--&gt;D;     C--&gt;D;    graph TB  mheap(global mheap) --&gt; arenas  mheap(global mheap) --&gt; allspans  mheap(global mheap) --&gt; central  arenas --&gt; |按134个obj_s">
+  <meta name="description" content="一、结构体 &amp; 关系graph TB  mheap(mheap global) --&gt; arenas  mheap(mheap global) --&gt; allspans  mheap(mheap global) --&gt; central  arenas --&gt; |按136个obj_size分类| heapArena heapArena --&gt; |64MB&#x2F;8KB&#x3D;8*1024页| mspan">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Go 内存管理">
 <meta property="og:url" content="http://example.com/2024/01/02/Go-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
 <meta property="og:site_name" content="buzhengya&#39;s blob">
-<meta property="og:description" content="结构体 &amp; 关系graph TD;     A--&gt;B;     A--&gt;C;     B--&gt;D;     C--&gt;D;    graph TB  mheap(global mheap) --&gt; arenas  mheap(global mheap) --&gt; allspans  mheap(global mheap) --&gt; central  arenas --&gt; |按134个obj_s">
+<meta property="og:description" content="一、结构体 &amp; 关系graph TB  mheap(mheap global) --&gt; arenas  mheap(mheap global) --&gt; allspans  mheap(mheap global) --&gt; central  arenas --&gt; |按136个obj_size分类| heapArena heapArena --&gt; |64MB&#x2F;8KB&#x3D;8*1024页| mspan">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-01-02T12:40:45.000Z">
-<meta property="article:modified_time" content="2024-01-03T13:20:20.708Z">
+<meta property="article:modified_time" content="2024-01-03T14:00:13.397Z">
 <meta property="article:author" content="buzhengya">
 <meta property="article:tag" content="Go">
 <meta property="article:tag" content="内存管理">
@@ -182,7 +182,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-01-03 21:20:20" itemprop="dateModified" datetime="2024-01-03T21:20:20+08:00">2024-01-03</time>
+                <time title="Modified: 2024-01-03 22:00:13" itemprop="dateModified" datetime="2024-01-03T22:00:13+08:00">2024-01-03</time>
               </span>
 
           
@@ -196,32 +196,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="结构体-关系"><a href="#结构体-关系" class="headerlink" title="结构体 &amp; 关系"></a>结构体 &amp; 关系</h3><pre class="mermaid">graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;</pre>
+        <h3 id="一、结构体-关系"><a href="#一、结构体-关系" class="headerlink" title="一、结构体 &amp; 关系"></a>一、结构体 &amp; 关系</h3><pre class="mermaid">graph TB
 
+mheap(mheap global) --> arenas
 
+mheap(mheap global) --> allspans
 
-<pre class="mermaid">graph TB
+mheap(mheap global) --> central
 
-mheap(global mheap) --> arenas
-
-mheap(global mheap) --> allspans
-
-mheap(global mheap) --> central
-
-arenas --> |按134个obj_size分类| heapArena
+arenas --> |按136个obj_size分类| heapArena
 heapArena --> |64MB/8KB=8*1024页| mspan
 
 allspans --> mspan
 
-central --> |按134个obj_size分类| mcentral
+central --> |按136个obj_size分类| mcentral
 mcentral --> |partial or full| mspan
 
 p(global p) --> mcache
-mcache --> |按134个obj_size分类| mspan</pre>
+mcache --> |按136个obj_size分类| mspan</pre>
 
 <details>
   <summary>mheap</summary>
@@ -239,15 +231,21 @@ mcache --> |按134个obj_size分类| mspan</pre>
 </details>
 
 <details>
-  <summary>mcache</summary>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mcache 有mcache0作为global，每个P对应一个mcache</span></span><br><span class="line"><span class="keyword">type</span> mcache <span class="keyword">struct</span> &#123;</span><br><span class="line">	tiny       <span class="type">uintptr</span>  </span><br><span class="line">	tinyoffset <span class="type">uintptr</span>  </span><br><span class="line">	tinyAllocs <span class="type">uintptr</span></span><br><span class="line">	alloc [numSpanClasses]*mspan <span class="comment">// spans to allocate from, indexed by spanClass</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</details>
-
-<details>
   <summary>mcentral</summary>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// spanSet 是 *mspan数组</span></span><br><span class="line"><span class="keyword">type</span> mcentral <span class="keyword">struct</span> &#123;</span><br><span class="line">	partial [<span class="number">2</span>]spanSet <span class="comment">// list of spans with a free object  </span></span><br><span class="line">	full    [<span class="number">2</span>]spanSet <span class="comment">// list of spans with no free objects</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </details>
 
+<details>
+  <summary>mcache</summary>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mcache 有mcache0作为global，每个P对应一个mcache</span></span><br><span class="line"><span class="keyword">type</span> mcache <span class="keyword">struct</span> &#123;</span><br><span class="line">	tiny       <span class="type">uintptr</span>  </span><br><span class="line">	tinyoffset <span class="type">uintptr</span>  </span><br><span class="line">	tinyAllocs <span class="type">uintptr</span></span><br><span class="line">	alloc [numSpanClasses]*mspan <span class="comment">// spans to allocate from, indexed by spanClass</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+
+<p>136个<code>obj_size</code>：136个<code>obj_size</code>是因为67个跨度类 + 1个大object(超过32KB)，然后乘2（最后1bit用来区分是否含指针，GC用）。</p>
+<p><code>mheap</code>：全局的内存管理。</p>
+<p><code>arenas</code>：基于 <code>obj_size</code> 的物理内存的管理，按64MB去管理物理内存，将物理内存划分为8096个<code>mspan</code>。</p>
+<p><code>mcentral</code>：基于 <code>obj_size</code> 的内存分配管理，标识<code>mspan</code>的使用情况，<code>full</code> 还是 <code>partial</code></p>
+<p><code>mcache</code>：绑定在<code>p</code>上，<code>p</code>运行时需要不同大小的内存，从不同的<code>mspan</code>中分配，当绑定的<code>mspan</code>内存用完时，不再指向该<code>mspan</code>，从<code>mcentral</code>申请一个新的。（注：GC时应该会把有可用空间的<code>mspan</code>从<code>mcentral</code>的<code>full</code>移到<code>partial</code>，然后<code>mcache</code></p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><h4 id="mheap-初始化"><a href="#mheap-初始化" class="headerlink" title="mheap 初始化"></a>mheap 初始化</h4><h4 id="mcentral-初始化"><a href="#mcentral-初始化" class="headerlink" title="mcentral 初始化"></a>mcentral 初始化</h4><h4 id="mcache-初始化"><a href="#mcache-初始化" class="headerlink" title="mcache 初始化"></a>mcache 初始化</h4><h3 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h3><h4 id="mheap扩容"><a href="#mheap扩容" class="headerlink" title="mheap扩容"></a>mheap扩容</h4><h4 id="mcache扩容"><a href="#mcache扩容" class="headerlink" title="mcache扩容"></a>mcache扩容</h4><h3 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h3><h4 id="mheap-GC"><a href="#mheap-GC" class="headerlink" title="mheap GC"></a>mheap GC</h4><h4 id="mcache-GC"><a href="#mcache-GC" class="headerlink" title="mcache GC"></a>mcache GC</h4>
     </div>
 
     
@@ -328,7 +326,7 @@ mcache --> |按134个obj_size分类| mspan</pre>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93-%E5%85%B3%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">结构体 &amp; 关系</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%BB%93%E6%9E%84%E4%BD%93-%E5%85%B3%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">一、结构体 &amp; 关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mheap-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.1.</span> <span class="nav-text">mheap 初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mcentral-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.2.</span> <span class="nav-text">mcentral 初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mcache-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.3.</span> <span class="nav-text">mcache 初始化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%AE%B9"><span class="nav-number">3.</span> <span class="nav-text">扩容</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mheap%E6%89%A9%E5%AE%B9"><span class="nav-number">3.1.</span> <span class="nav-text">mheap扩容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mcache%E6%89%A9%E5%AE%B9"><span class="nav-number">3.2.</span> <span class="nav-text">mcache扩容</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GC"><span class="nav-number">4.</span> <span class="nav-text">GC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mheap-GC"><span class="nav-number">4.1.</span> <span class="nav-text">mheap GC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mcache-GC"><span class="nav-number">4.2.</span> <span class="nav-text">mcache GC</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

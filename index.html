@@ -176,7 +176,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-01-03 21:20:20" itemprop="dateModified" datetime="2024-01-03T21:20:20+08:00">2024-01-03</time>
+                <time title="Modified: 2024-01-03 22:00:13" itemprop="dateModified" datetime="2024-01-03T22:00:13+08:00">2024-01-03</time>
               </span>
 
           
@@ -190,32 +190,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="结构体-关系"><a href="#结构体-关系" class="headerlink" title="结构体 &amp; 关系"></a>结构体 &amp; 关系</h3><pre class="mermaid">graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;</pre>
+          <h3 id="一、结构体-关系"><a href="#一、结构体-关系" class="headerlink" title="一、结构体 &amp; 关系"></a>一、结构体 &amp; 关系</h3><pre class="mermaid">graph TB
 
+mheap(mheap global) --> arenas
 
+mheap(mheap global) --> allspans
 
-<pre class="mermaid">graph TB
+mheap(mheap global) --> central
 
-mheap(global mheap) --> arenas
-
-mheap(global mheap) --> allspans
-
-mheap(global mheap) --> central
-
-arenas --> |按134个obj_size分类| heapArena
+arenas --> |按136个obj_size分类| heapArena
 heapArena --> |64MB/8KB=8*1024页| mspan
 
 allspans --> mspan
 
-central --> |按134个obj_size分类| mcentral
+central --> |按136个obj_size分类| mcentral
 mcentral --> |partial or full| mspan
 
 p(global p) --> mcache
-mcache --> |按134个obj_size分类| mspan</pre>
+mcache --> |按136个obj_size分类| mspan</pre>
 
 <details>
   <summary>mheap</summary>
@@ -233,15 +225,21 @@ mcache --> |按134个obj_size分类| mspan</pre>
 </details>
 
 <details>
-  <summary>mcache</summary>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mcache 有mcache0作为global，每个P对应一个mcache</span></span><br><span class="line"><span class="keyword">type</span> mcache <span class="keyword">struct</span> &#123;</span><br><span class="line">	tiny       <span class="type">uintptr</span>  </span><br><span class="line">	tinyoffset <span class="type">uintptr</span>  </span><br><span class="line">	tinyAllocs <span class="type">uintptr</span></span><br><span class="line">	alloc [numSpanClasses]*mspan <span class="comment">// spans to allocate from, indexed by spanClass</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</details>
-
-<details>
   <summary>mcentral</summary>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// spanSet 是 *mspan数组</span></span><br><span class="line"><span class="keyword">type</span> mcentral <span class="keyword">struct</span> &#123;</span><br><span class="line">	partial [<span class="number">2</span>]spanSet <span class="comment">// list of spans with a free object  </span></span><br><span class="line">	full    [<span class="number">2</span>]spanSet <span class="comment">// list of spans with no free objects</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </details>
 
+<details>
+  <summary>mcache</summary>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mcache 有mcache0作为global，每个P对应一个mcache</span></span><br><span class="line"><span class="keyword">type</span> mcache <span class="keyword">struct</span> &#123;</span><br><span class="line">	tiny       <span class="type">uintptr</span>  </span><br><span class="line">	tinyoffset <span class="type">uintptr</span>  </span><br><span class="line">	tinyAllocs <span class="type">uintptr</span></span><br><span class="line">	alloc [numSpanClasses]*mspan <span class="comment">// spans to allocate from, indexed by spanClass</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+
+<p>136个<code>obj_size</code>：136个<code>obj_size</code>是因为67个跨度类 + 1个大object(超过32KB)，然后乘2（最后1bit用来区分是否含指针，GC用）。</p>
+<p><code>mheap</code>：全局的内存管理。</p>
+<p><code>arenas</code>：基于 <code>obj_size</code> 的物理内存的管理，按64MB去管理物理内存，将物理内存划分为8096个<code>mspan</code>。</p>
+<p><code>mcentral</code>：基于 <code>obj_size</code> 的内存分配管理，标识<code>mspan</code>的使用情况，<code>full</code> 还是 <code>partial</code></p>
+<p><code>mcache</code>：绑定在<code>p</code>上，<code>p</code>运行时需要不同大小的内存，从不同的<code>mspan</code>中分配，当绑定的<code>mspan</code>内存用完时，不再指向该<code>mspan</code>，从<code>mcentral</code>申请一个新的。（注：GC时应该会把有可用空间的<code>mspan</code>从<code>mcentral</code>的<code>full</code>移到<code>partial</code>，然后<code>mcache</code></p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><h4 id="mheap-初始化"><a href="#mheap-初始化" class="headerlink" title="mheap 初始化"></a>mheap 初始化</h4><h4 id="mcentral-初始化"><a href="#mcentral-初始化" class="headerlink" title="mcentral 初始化"></a>mcentral 初始化</h4><h4 id="mcache-初始化"><a href="#mcache-初始化" class="headerlink" title="mcache 初始化"></a>mcache 初始化</h4><h3 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h3><h4 id="mheap扩容"><a href="#mheap扩容" class="headerlink" title="mheap扩容"></a>mheap扩容</h4><h4 id="mcache扩容"><a href="#mcache扩容" class="headerlink" title="mcache扩容"></a>mcache扩容</h4><h3 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h3><h4 id="mheap-GC"><a href="#mheap-GC" class="headerlink" title="mheap GC"></a>mheap GC</h4><h4 id="mcache-GC"><a href="#mcache-GC" class="headerlink" title="mcache GC"></a>mcache GC</h4>
       
     </div>
 
